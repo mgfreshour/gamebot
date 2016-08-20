@@ -5,14 +5,12 @@ import (
 	"log"
 	"os"
 
-	"github.com/nlopes/slack"
 	"github.com/mgfreshour/gamebot/chess"
+	"github.com/nlopes/slack"
 	"regexp"
 )
 
-
-
-const slackToken string = os.Getenv("SLACK_TOKEN")
+var slackToken string = os.Getenv("SLACK_TOKEN")
 
 func main() {
 	api := slack.New(slackToken)
@@ -27,7 +25,7 @@ func main() {
 	game = chess.NewGame()
 	moveRegex := regexp.MustCompile(`gamebot\s+([A-H])([0-8])-([A-H])([0-8])`)
 
-	Loop:
+Loop:
 	for {
 		select {
 		case msg := <-rtm.IncomingEvents:
@@ -36,16 +34,15 @@ func main() {
 			case *slack.HelloEvent:
 			// Ignore hello
 
-
 			case *slack.MessageEvent:
-				if (ev.Text == "gamebot start game") {
+				if ev.Text == "gamebot start game" {
 					game = chess.NewGame()
 					rtm.SendMessage(rtm.NewOutgoingMessage(game.DisplaySlack(), ev.Channel))
 				}
-				if (ev.Text == "gamebot show") {
+				if ev.Text == "gamebot show" {
 					rtm.SendMessage(rtm.NewOutgoingMessage(game.DisplaySlack(), ev.Channel))
 				}
-				if (game != nil && moveRegex.MatchString(ev.Text)) {
+				if game != nil && moveRegex.MatchString(ev.Text) {
 					matches := moveRegex.FindAllStringSubmatch(ev.Text, -1)
 					err := game.Move(matches[0][2], matches[0][1], matches[0][4], matches[0][3])
 					if err != nil {
@@ -72,14 +69,13 @@ func main() {
 			case *slack.DisconnectedEvent:
 				log.Println("Bot disconnected")
 
-
 			case *slack.ConnectedEvent:
 				log.Printf("Bot connecting, connection_count=%d\n", ev.ConnectionCount)
 
 			default:
 
-			// Ignore other events..
-			 fmt.Printf("Unexpected: %v\n", msg.Data)
+				// Ignore other events..
+				fmt.Printf("Unexpected: %v\n", msg.Data)
 			}
 		}
 	}
