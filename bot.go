@@ -13,24 +13,25 @@ import (
 var slackToken = os.Getenv("SLACK_TOKEN")
 var moveRegex = regexp.MustCompile(`gamebot\s+([A-H])([0-8])-([A-H])([0-8])`)
 var game *chess.Game
+var slackClient *slack.Client
 var rtm *slack.RTM
 
 func handlMessage (ev *slack.MessageEvent) {
 	if ev.Text == "gamebot start game" {
 		game = chess.NewGame()
-		rtm.SendMessage(rtm.NewOutgoingMessage(game.DisplaySlack(), ev.Channel))
+		slackClient.PostMessage(ev.Channel, game.DisplaySlack(), slack.PostMessageParameters{})
 	}
 	if ev.Text == "gamebot show" {
-		rtm.SendMessage(rtm.NewOutgoingMessage(game.DisplaySlack(), ev.Channel))
+		slackClient.PostMessage(ev.Channel, game.DisplaySlack(), slack.PostMessageParameters{})
 	}
 	if game != nil && moveRegex.MatchString(ev.Text) {
 		matches := moveRegex.FindAllStringSubmatch(ev.Text, -1)
 		err := game.Move(matches[0][2], matches[0][1], matches[0][4], matches[0][3])
 		if err != nil {
-			rtm.SendMessage(rtm.NewOutgoingMessage(fmt.Sprintf("%v", err), ev.Channel))
+			slackClient.PostMessage(ev.Channel, fmt.Sprintf("%v", err), slack.PostMessageParameters{})
 		} else {
-			rtm.SendMessage(rtm.NewOutgoingMessage("Made Move", ev.Channel))
-			rtm.SendMessage(rtm.NewOutgoingMessage(game.DisplaySlack(), ev.Channel))
+			slackClient.PostMessage(ev.Channel, "Made Move", slack.PostMessageParameters{})
+			slackClient.PostMessage(ev.Channel, game.DisplaySlack(), slack.PostMessageParameters{})
 		}
 	}
 }
@@ -39,12 +40,10 @@ func main() {
 	if slackToken == "" {
 		panic("Missing SLACK_TOKEN")
 	}
-	api := slack.New(slackToken)
-	logger := log.New(os.Stdout, "slack-bot: ", log.Lshortfile|log.LstdFlags)
-	slack.SetLogger(logger)
-	api.SetDebug(true)
+	slackClient = slack.New(slackToken)
+	slackClient.SetDebug(true)
 
-	rtm = api.NewRTM()
+	rtm = slackClient.NewRTM()
 	go rtm.ManageConnection()
 
 Loop:
