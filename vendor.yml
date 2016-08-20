@@ -1,0 +1,23 @@
+vendors:
+- path: github.com/davecgh/go-spew
+  rev: 6cf5744a041a0022271cefed95ba843f6d87fd51
+- path: github.com/golang/protobuf
+  rev: f592bd283e9ef86337a432eb50e592278c3d534d
+- path: github.com/nlopes/slack
+  rev: b7940f209838f93dc7ab0d823145513c9660f22a
+- path: github.com/onsi/ginkgo
+  rev: 43e2af1f01ace55adbb6d7d0f30416476db1baae
+- path: github.com/onsi/gomega
+  rev: c90bd38f8da6e92f8b114953db2f0ad7361fb4b4
+- path: github.com/pmezard/go-difflib
+  rev: 792786c7400a136282c1664665ae0a8db921c6c2
+- path: github.com/stretchr/testify
+  rev: d77da356e56a7428ad25149ca77381849a6a5232
+- path: golang.org/x/net
+  rev: 7394c112eae4dba7e96bfcfe738e6373d61772b4
+- path: golang.org/x/sys
+  rev: a646d33e2ee3172a661fc09bca23bb4889a41bc8
+- path: gopkg.in/check.v1
+  rev: 4f90aeace3a26ad7021961c297b22c42160c7b25
+- path: gopkg.in/yaml.v2
+  rev: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e

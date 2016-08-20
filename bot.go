@@ -10,48 +10,54 @@ import (
 	"regexp"
 )
 
-var slackToken string = os.Getenv("SLACK_TOKEN")
+var slackToken = os.Getenv("SLACK_TOKEN")
+var moveRegex = regexp.MustCompile(`gamebot\s+([A-H])([0-8])-([A-H])([0-8])`)
+var game *chess.Game
+var rtm *slack.RTM
+
+func handlMessage (ev *slack.MessageEvent) {
+	if ev.Text == "gamebot start game" {
+		game = chess.NewGame()
+		rtm.SendMessage(rtm.NewOutgoingMessage(game.DisplaySlack(), ev.Channel))
+	}
+	if ev.Text == "gamebot show" {
+		rtm.SendMessage(rtm.NewOutgoingMessage(game.DisplaySlack(), ev.Channel))
+	}
+	if game != nil && moveRegex.MatchString(ev.Text) {
+		matches := moveRegex.FindAllStringSubmatch(ev.Text, -1)
+		err := game.Move(matches[0][2], matches[0][1], matches[0][4], matches[0][3])
+		if err != nil {
+			rtm.SendMessage(rtm.NewOutgoingMessage(fmt.Sprintf("%v", err), ev.Channel))
+		} else {
+			rtm.SendMessage(rtm.NewOutgoingMessage("Made Move", ev.Channel))
+			rtm.SendMessage(rtm.NewOutgoingMessage(game.DisplaySlack(), ev.Channel))
+		}
+	}
+}
 
 func main() {
+	if slackToken == "" {
+		panic("Missing SLACK_TOKEN")
+	}
 	api := slack.New(slackToken)
 	logger := log.New(os.Stdout, "slack-bot: ", log.Lshortfile|log.LstdFlags)
 	slack.SetLogger(logger)
-	api.SetDebug(false)
+	api.SetDebug(true)
 
-	rtm := api.NewRTM()
+	rtm = api.NewRTM()
 	go rtm.ManageConnection()
 
-	var game *chess.Game
-	game = chess.NewGame()
-	moveRegex := regexp.MustCompile(`gamebot\s+([A-H])([0-8])-([A-H])([0-8])`)
-
 Loop:
-	for {
-		select {
-		case msg := <-rtm.IncomingEvents:
+	for msg := range rtm.IncomingEvents {
+		// select {
+		// case msg := <-:
 			//fmt.Print("Event Received: ")
 			switch ev := msg.Data.(type) {
 			case *slack.HelloEvent:
 			// Ignore hello
 
 			case *slack.MessageEvent:
-				if ev.Text == "gamebot start game" {
-					game = chess.NewGame()
-					rtm.SendMessage(rtm.NewOutgoingMessage(game.DisplaySlack(), ev.Channel))
-				}
-				if ev.Text == "gamebot show" {
-					rtm.SendMessage(rtm.NewOutgoingMessage(game.DisplaySlack(), ev.Channel))
-				}
-				if game != nil && moveRegex.MatchString(ev.Text) {
-					matches := moveRegex.FindAllStringSubmatch(ev.Text, -1)
-					err := game.Move(matches[0][2], matches[0][1], matches[0][4], matches[0][3])
-					if err != nil {
-						rtm.SendMessage(rtm.NewOutgoingMessage(fmt.Sprintf("%v", err), ev.Channel))
-					} else {
-						rtm.SendMessage(rtm.NewOutgoingMessage("Made Move", ev.Channel))
-						rtm.SendMessage(rtm.NewOutgoingMessage(game.DisplaySlack(), ev.Channel))
-					}
-				}
+				handlMessage(ev)
 
 			case *slack.PresenceChangeEvent:
 			//	fmt.Printf("Presence Change: %v\n", ev)
@@ -63,7 +69,7 @@ Loop:
 				fmt.Printf("Error: %s\n", ev.Error())
 
 			case *slack.InvalidAuthEvent:
-				fmt.Println("Invalid credentials")
+				fmt.Println("Invalid credentials!!")
 				break Loop
 
 			case *slack.DisconnectedEvent:
@@ -77,6 +83,6 @@ Loop:
 				// Ignore other events..
 				fmt.Printf("Unexpected: %v\n", msg.Data)
 			}
-		}
+		// }
 	}
 }
