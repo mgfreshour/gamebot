@@ -7,6 +7,7 @@ import (
 )
 
 type side rune
+
 const (
 	White side = 'w'
 	Black side = 'b'
@@ -36,7 +37,6 @@ type Game struct {
 	Pieces []*Piece
 	Side   side
 }
-
 
 func NewGame() *Game {
 	game := Game{make([]*Piece, 0), White}
@@ -136,4 +136,3 @@ func (g *Game) Move(srcRank string, srcFile string, dstRank string, dstFile stri
 
 	return nil
 }
-
