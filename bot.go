@@ -16,22 +16,30 @@ var game *chess.Game
 var slackClient *slack.Client
 var rtm *slack.RTM
 
-func handlMessage (ev *slack.MessageEvent) {
+func sayInChan(ch string, msg string) {
+	//chanId, Ts, err
+	_, _, err := slackClient.PostMessage(ch, msg, slack.PostMessageParameters{})
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func handlMessage(ev *slack.MessageEvent) {
 	if ev.Text == "gamebot start game" {
 		game = chess.NewGame()
-		slackClient.PostMessage(ev.Channel, game.DisplaySlack(), slack.PostMessageParameters{})
+		sayInChan(ev.Channel, game.DisplaySlack())
 	}
 	if ev.Text == "gamebot show" {
-		slackClient.PostMessage(ev.Channel, game.DisplaySlack(), slack.PostMessageParameters{})
+		sayInChan(ev.Channel, game.DisplaySlack())
 	}
 	if game != nil && moveRegex.MatchString(ev.Text) {
 		matches := moveRegex.FindAllStringSubmatch(ev.Text, -1)
 		err := game.Move(matches[0][2], matches[0][1], matches[0][4], matches[0][3])
 		if err != nil {
-			slackClient.PostMessage(ev.Channel, fmt.Sprintf("%v", err), slack.PostMessageParameters{})
+			sayInChan(ev.Channel, fmt.Sprintf("%v", err))
 		} else {
-			slackClient.PostMessage(ev.Channel, "Made Move", slack.PostMessageParameters{})
-			slackClient.PostMessage(ev.Channel, game.DisplaySlack(), slack.PostMessageParameters{})
+			sayInChan(ev.Channel, "Made Move")
+			sayInChan(ev.Channel, game.DisplaySlack())
 		}
 	}
 }
@@ -46,42 +54,37 @@ func main() {
 	rtm = slackClient.NewRTM()
 	go rtm.ManageConnection()
 
-Loop:
 	for msg := range rtm.IncomingEvents {
-		// select {
-		// case msg := <-:
-			//fmt.Print("Event Received: ")
-			switch ev := msg.Data.(type) {
-			case *slack.HelloEvent:
+		switch ev := msg.Data.(type) {
+
+		case *slack.DisconnectedEvent:
+			log.Println("Bot disconnected")
+
+		case *slack.ConnectedEvent:
+			log.Printf("Bot connecting, connection_count=%d\n", ev.ConnectionCount)
+			// TODO - cache channel and users
+
+		case *slack.MessageEvent:
+			handlMessage(ev)
+
+		case *slack.RTMError:
+			fmt.Printf("Error: %s\n", ev.Error())
+
+		case *slack.InvalidAuthEvent:
+			panic("Invalid credentials!!")
+
+			//case *slack.HelloEvent:
 			// Ignore hello
 
-			case *slack.MessageEvent:
-				handlMessage(ev)
-
-			case *slack.PresenceChangeEvent:
+			//case *slack.PresenceChangeEvent:
 			//	fmt.Printf("Presence Change: %v\n", ev)
 
-			case *slack.LatencyReport:
+			//case *slack.LatencyReport:
 			//	fmt.Printf("Current latency: %v\n", ev.Value)
 
-			case *slack.RTMError:
-				fmt.Printf("Error: %s\n", ev.Error())
-
-			case *slack.InvalidAuthEvent:
-				fmt.Println("Invalid credentials!!")
-				break Loop
-
-			case *slack.DisconnectedEvent:
-				log.Println("Bot disconnected")
-
-			case *slack.ConnectedEvent:
-				log.Printf("Bot connecting, connection_count=%d\n", ev.ConnectionCount)
-
-			default:
-
-				// Ignore other events..
-				fmt.Printf("Unexpected: %v\n", msg.Data)
-			}
-		// }
+			//default:
+			// Ignore other events..
+			//fmt.Printf("Unexpected: %v\n", msg.Data)
+		}
 	}
 }

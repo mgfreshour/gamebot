@@ -1,15 +1,23 @@
 
+SOURCEDIR=.
+BINARY=$(SOURCEDIR)/bin/gamebot
+SOURCES := $(shell find $(SOURCEDIR) -name '*.go')
+PACKAGES := $(shell go list ./... | grep -v /vendor/)
 
-default: fmt test lint build
+all: clean fmt test lint build
+
+.DEFAULT_GOAL: all
 
 deps:
 	go get -u github.com/govend/govend
 	govend -v
 build:
-	go build bot.go
+	go build -o ${BINARY} bot.go
 lint:
-	gometalinter --deadline 10s --disable=gocyclo $(go list ./... | grep -v /vendor/)
+	gometalinter --vendor --deadline 10s --disable=gocyclo --disable=gotype .
 fmt:
-	go fmt $(go list ./... | grep -v /vendor/)
+	go fmt ${PACKAGES}
 test:
-	go test $(go list ./... | grep -v /vendor/)
+	go test ${PACKAGES}
+clean:
+	rm -f ${BINARY}

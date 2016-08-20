@@ -62,6 +62,4 @@ func (p *Piece) Side() side {
 
 func (p *Piece) Capture() {
 	p.captured = true
-	p.x = 255
-	p.y = 255
 }

@@ -96,7 +96,7 @@ func (g *Game) Piece(rank string, file string) *Piece {
 	x, y := rankFileToXY(rank, file)
 
 	for _, piece := range g.Pieces {
-		if piece.x == x && piece.y == byte(y) {
+		if !piece.captured && piece.x == x && piece.y == byte(y) {
 			return piece
 		}
 	}
