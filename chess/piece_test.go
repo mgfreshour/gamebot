@@ -9,26 +9,49 @@ import (
 	"fmt"
 )
 
+type testMove struct {
+	srcFile string
+	srcRank string
+	dstFile string 
+	dstRank string 
+}
+
 var _ = Describe("Piece", func() {
 	var game *Game
-	var testee *Piece
+	// var testee *Piece
 	Describe("ValidateMove", func() {
 		Context("Black Pawns", func() {
 			BeforeEach(func() {
 				game = LoadFENGame("8/4p3/8/8/8/8/4P3/8 w KQkq - 0 1")
 				fmt.Println(game.DisplayText()) 
 			})
-			It("Allows first forward movement by 1", func() {
-				testee = game.Piece("E", "7")
-				Expect(testee.ValidateMove("E", "6", nil)).To(BeNil())
-			})
-			It("Allows first forward movement by 2", func() {
-				testee = game.Piece("E", "7")
-				Expect(testee.ValidateMove("E", "5", nil)).To(BeNil())
-			})
-			It("Disallows first forward movement by 3", func() {
-				testee = game.Piece("E", "7")
-				Expect(testee.ValidateMove("E", "4", nil)).To(Not(BeNil()))
+			Context("First Move", func() {
+				allowed := map[string]testMove{
+					"Allows forward movement by 1": testMove{ "E", "7", "E", "6" },
+					"Allows forward movement by 2": testMove{ "E", "7", "E", "5" },
+					//"Allows Capturing diagnally":
+				}
+				disallowed := map[string]testMove{
+					"Disallows forward movement by 3": testMove{ "E", "7", "E", "4" },
+					"Disallows forward diagnal": testMove{ "E", "7", "F", "6" },
+					"Disallows backward diagnal": testMove{ "E", "7", "F", "8" },
+					"Disallows backward movement": testMove{ "E", "7", "E", "8" },
+					//"Disallows Capturing forward":
+				}
+				for name, move := range allowed {
+					It(name, func() {
+						testee := game.Piece(move.srcFile, move.srcRank)
+						target := game.Piece(move.dstFile, move.dstRank)
+						Expect(testee.ValidateMove(move.dstFile, move.dstRank, target)).To(BeNil())
+					})
+				}
+				for name, move := range disallowed {
+					It(name, func() {
+						testee := game.Piece(move.srcFile, move.srcRank)
+						target := game.Piece(move.dstFile, move.dstRank)
+						Expect(testee.ValidateMove(move.dstFile, move.dstRank, target)).To(Not(BeNil()))
+					})
+				}
 			})
 		})
 	})
