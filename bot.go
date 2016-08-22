@@ -18,7 +18,7 @@ var rtm *slack.RTM
 
 func sayInChan(ch string, msg string) {
 	//chanId, Ts, err
-	_, _, err := slackClient.PostMessage(ch, msg, slack.PostMessageParameters{})
+	_, _, err := slackClient.PostMessage(ch, msg, slack.PostMessageParameters{Username: "gamebot"})
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -34,7 +34,7 @@ func handlMessage(ev *slack.MessageEvent) {
 	}
 	if game != nil && moveRegex.MatchString(ev.Text) {
 		matches := moveRegex.FindAllStringSubmatch(ev.Text, -1)
-		err := game.Move(matches[0][2], matches[0][1], matches[0][4], matches[0][3])
+		err := game.Move(matches[0][1], matches[0][2], matches[0][3], matches[0][4])
 		if err != nil {
 			sayInChan(ev.Channel, fmt.Sprintf("%v", err))
 		} else {

@@ -41,41 +41,41 @@ type Game struct {
 func NewGame() *Game {
 	game := Game{make([]*Piece, 0), White}
 
-	game.Pieces = append(game.Pieces, &Piece{0, 0, false, Black, 'r'})
-	game.Pieces = append(game.Pieces, &Piece{1, 0, false, Black, 'n'})
-	game.Pieces = append(game.Pieces, &Piece{2, 0, false, Black, 'b'})
-	game.Pieces = append(game.Pieces, &Piece{3, 0, false, Black, 'q'})
-	game.Pieces = append(game.Pieces, &Piece{4, 0, false, Black, 'k'})
-	game.Pieces = append(game.Pieces, &Piece{5, 0, false, Black, 'b'})
-	game.Pieces = append(game.Pieces, &Piece{6, 0, false, Black, 'n'})
-	game.Pieces = append(game.Pieces, &Piece{7, 0, false, Black, 'r'})
+	game.Pieces = append(game.Pieces, &Piece{0, 0, false, Black, Rook})
+	game.Pieces = append(game.Pieces, &Piece{1, 0, false, Black, Knight})
+	game.Pieces = append(game.Pieces, &Piece{2, 0, false, Black, Bishop})
+	game.Pieces = append(game.Pieces, &Piece{3, 0, false, Black, Queen})
+	game.Pieces = append(game.Pieces, &Piece{4, 0, false, Black, King})
+	game.Pieces = append(game.Pieces, &Piece{5, 0, false, Black, Bishop})
+	game.Pieces = append(game.Pieces, &Piece{6, 0, false, Black, Knight})
+	game.Pieces = append(game.Pieces, &Piece{7, 0, false, Black, Rook})
 
-	game.Pieces = append(game.Pieces, &Piece{0, 1, false, Black, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{1, 1, false, Black, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{2, 1, false, Black, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{3, 1, false, Black, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{4, 1, false, Black, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{5, 1, false, Black, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{6, 1, false, Black, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{7, 1, false, Black, 'p'})
+	game.Pieces = append(game.Pieces, &Piece{0, 1, false, Black, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{1, 1, false, Black, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{2, 1, false, Black, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{3, 1, false, Black, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{4, 1, false, Black, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{5, 1, false, Black, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{6, 1, false, Black, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{7, 1, false, Black, Pawn})
 
-	game.Pieces = append(game.Pieces, &Piece{0, 6, false, White, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{1, 6, false, White, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{2, 6, false, White, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{3, 6, false, White, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{4, 6, false, White, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{5, 6, false, White, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{6, 6, false, White, 'p'})
-	game.Pieces = append(game.Pieces, &Piece{7, 6, false, White, 'p'})
+	game.Pieces = append(game.Pieces, &Piece{0, 6, false, White, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{1, 6, false, White, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{2, 6, false, White, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{3, 6, false, White, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{4, 6, false, White, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{5, 6, false, White, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{6, 6, false, White, Pawn})
+	game.Pieces = append(game.Pieces, &Piece{7, 6, false, White, Pawn})
 
-	game.Pieces = append(game.Pieces, &Piece{0, 7, false, White, 'r'})
-	game.Pieces = append(game.Pieces, &Piece{1, 7, false, White, 'n'})
-	game.Pieces = append(game.Pieces, &Piece{2, 7, false, White, 'b'})
-	game.Pieces = append(game.Pieces, &Piece{3, 7, false, White, 'k'})
-	game.Pieces = append(game.Pieces, &Piece{4, 7, false, White, 'q'})
-	game.Pieces = append(game.Pieces, &Piece{5, 7, false, White, 'b'})
-	game.Pieces = append(game.Pieces, &Piece{6, 7, false, White, 'n'})
-	game.Pieces = append(game.Pieces, &Piece{7, 7, false, White, 'r'})
+	game.Pieces = append(game.Pieces, &Piece{0, 7, false, White, Rook})
+	game.Pieces = append(game.Pieces, &Piece{1, 7, false, White, Knight})
+	game.Pieces = append(game.Pieces, &Piece{2, 7, false, White, Bishop})
+	game.Pieces = append(game.Pieces, &Piece{3, 7, false, White, King})
+	game.Pieces = append(game.Pieces, &Piece{4, 7, false, White, Queen})
+	game.Pieces = append(game.Pieces, &Piece{5, 7, false, White, Bishop})
+	game.Pieces = append(game.Pieces, &Piece{6, 7, false, White, Knight})
+	game.Pieces = append(game.Pieces, &Piece{7, 7, false, White, Rook})
 
 	return &game
 }
@@ -92,7 +92,7 @@ func (g *Game) Board() Board {
 	return board
 }
 
-func (g *Game) Piece(rank string, file string) *Piece {
+func (g *Game) Piece(file string, rank string) *Piece {
 	x, y := rankFileToXY(rank, file)
 
 	for _, piece := range g.Pieces {
@@ -104,8 +104,8 @@ func (g *Game) Piece(rank string, file string) *Piece {
 	return nil
 }
 
-func (g *Game) Move(srcRank string, srcFile string, dstRank string, dstFile string) error {
-	moving := g.Piece(srcRank, srcFile)
+func (g *Game) Move(srcFile string, srcRank string, dstFile string, dstRank string) error {
+	moving := g.Piece(srcFile, srcRank)
 	if moving == nil {
 		return errors.New("No Piece Found there!")
 	}
@@ -118,7 +118,7 @@ func (g *Game) Move(srcRank string, srcFile string, dstRank string, dstFile stri
 		return errors.New("Invalid Move, it's not your turn!")
 	}
 
-	target := g.Piece(dstRank, dstFile)
+	target := g.Piece(dstFile, dstRank)
 	if target != nil {
 		if target.side == moving.side {
 			return errors.New("Invalid Move, can't take your own pieces!")
