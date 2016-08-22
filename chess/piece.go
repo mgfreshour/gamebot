@@ -61,7 +61,9 @@ func (p *Piece) ValidateMove(rank string, file string, target *Piece) error {
 
 	switch p.piece {
 	case Pawn:
-		fmt.Printf("MGF - checking %v, %v", dx, dy)
+		if target != nil {
+			
+		}
 		if dx > 0 || dy > 2 {
 			return errors.New("Invalid move")
 		}
