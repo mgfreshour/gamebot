@@ -31,6 +31,13 @@ func rankFileToXY(rank string, file string) (byte, byte) {
 	return x, byte(y)
 }
 
+func xyToRankFile(x int, y int) (string, string) {
+	var r = strconv.Itoa(y + 1)
+	var f = string("ABCDEFGH"[x])
+
+	return f, r
+}
+
 type Board [8][8]*Piece
 
 type Game struct {
@@ -39,45 +46,7 @@ type Game struct {
 }
 
 func NewGame() *Game {
-	game := Game{make([]*Piece, 0), White}
-
-	game.Pieces = append(game.Pieces, &Piece{0, 0, false, Black, Rook})
-	game.Pieces = append(game.Pieces, &Piece{1, 0, false, Black, Knight})
-	game.Pieces = append(game.Pieces, &Piece{2, 0, false, Black, Bishop})
-	game.Pieces = append(game.Pieces, &Piece{3, 0, false, Black, Queen})
-	game.Pieces = append(game.Pieces, &Piece{4, 0, false, Black, King})
-	game.Pieces = append(game.Pieces, &Piece{5, 0, false, Black, Bishop})
-	game.Pieces = append(game.Pieces, &Piece{6, 0, false, Black, Knight})
-	game.Pieces = append(game.Pieces, &Piece{7, 0, false, Black, Rook})
-
-	game.Pieces = append(game.Pieces, &Piece{0, 1, false, Black, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{1, 1, false, Black, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{2, 1, false, Black, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{3, 1, false, Black, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{4, 1, false, Black, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{5, 1, false, Black, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{6, 1, false, Black, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{7, 1, false, Black, Pawn})
-
-	game.Pieces = append(game.Pieces, &Piece{0, 6, false, White, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{1, 6, false, White, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{2, 6, false, White, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{3, 6, false, White, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{4, 6, false, White, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{5, 6, false, White, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{6, 6, false, White, Pawn})
-	game.Pieces = append(game.Pieces, &Piece{7, 6, false, White, Pawn})
-
-	game.Pieces = append(game.Pieces, &Piece{0, 7, false, White, Rook})
-	game.Pieces = append(game.Pieces, &Piece{1, 7, false, White, Knight})
-	game.Pieces = append(game.Pieces, &Piece{2, 7, false, White, Bishop})
-	game.Pieces = append(game.Pieces, &Piece{3, 7, false, White, King})
-	game.Pieces = append(game.Pieces, &Piece{4, 7, false, White, Queen})
-	game.Pieces = append(game.Pieces, &Piece{5, 7, false, White, Bishop})
-	game.Pieces = append(game.Pieces, &Piece{6, 7, false, White, Knight})
-	game.Pieces = append(game.Pieces, &Piece{7, 7, false, White, Rook})
-
-	return &game
+	return LoadFENGame("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 }
 
 func (g *Game) Board() Board {

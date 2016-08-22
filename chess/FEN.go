@@ -3,6 +3,7 @@ package chess
 import (
 	"strconv"
 	"unicode"
+	"bytes"
 )
 
 func LoadFENGame(s string) *Game {
@@ -47,6 +48,11 @@ func loadBoardPositions(s string, game *Game) int {
 }
 
 func loadSide(s string, n int, game *Game) int {
+	if s[n] == 'w' {
+		game.Side = White
+	} else {
+		game.Side = Black
+	}
 	return n + 1
 }
 func loadCastling(s string, n int, game *Game) int {
@@ -64,4 +70,43 @@ func loadHalfMove(s string, n int, game *Game) int {
 func loadFullMove(s string, n int, game *Game) int {
 	return n + 1
 
+}
+
+func SaveFENGame(g *Game) string {
+	var buf bytes.Buffer
+
+	for y := 0; y < 8; y++ {
+		n := 0
+		for x := 0; x < 8; x++ {
+			f, r := xyToRankFile(x, y)
+			p := g.Piece(f, r)
+			if p != nil {
+				if n > 0 {
+					buf.Write([]byte(strconv.Itoa(n)))
+					n = 0
+				}
+				if p.side == White {
+					buf.WriteByte(byte(p.piece))
+				} else {
+					buf.WriteByte(byte(unicode.ToUpper(rune(p.piece))))
+				}
+			} else {
+				n++
+			}
+		}
+		if n > 0 {
+			buf.Write([]byte(strconv.Itoa(n)))
+			n = 0
+		}
+		if y < 7 {
+			buf.WriteByte('/')
+		}
+	}
+	buf.WriteByte(' ')
+
+	buf.WriteByte(byte(g.Side))
+
+	buf.Write([]byte(" KQkq - 0 1"))
+
+	return buf.String()
 }

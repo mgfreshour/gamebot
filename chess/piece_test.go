@@ -5,8 +5,6 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	"fmt"
 )
 
 type testMove struct {
@@ -23,7 +21,7 @@ var _ = Describe("Piece", func() {
 		Context("Black Pawns", func() {
 			BeforeEach(func() {
 				game = LoadFENGame("8/4p3/8/8/8/8/4P3/8 w KQkq - 0 1")
-				fmt.Println(game.DisplayText()) 
+				// fmt.Println(game.DisplayText()) 
 			})
 			Context("First Move", func() {
 				allowed := map[string]testMove{
@@ -39,18 +37,22 @@ var _ = Describe("Piece", func() {
 					//"Disallows Capturing forward":
 				}
 				for name, move := range allowed {
-					It(name, func() {
-						testee := game.Piece(move.srcFile, move.srcRank)
-						target := game.Piece(move.dstFile, move.dstRank)
-						Expect(testee.ValidateMove(move.dstFile, move.dstRank, target)).To(BeNil())
-					})
+					func(move testMove) {
+						It(name, func() {
+							testee := game.Piece(move.srcFile, move.srcRank)
+							target := game.Piece(move.dstFile, move.dstRank)
+							Expect(testee.ValidateMove(move.dstFile, move.dstRank, target)).To(BeNil())
+						})
+					}(move)
 				}
 				for name, move := range disallowed {
-					It(name, func() {
-						testee := game.Piece(move.srcFile, move.srcRank)
-						target := game.Piece(move.dstFile, move.dstRank)
-						Expect(testee.ValidateMove(move.dstFile, move.dstRank, target)).To(Not(BeNil()))
-					})
+					func(move testMove) {
+						It(name, func() {
+							testee := game.Piece(move.srcFile, move.srcRank)
+							target := game.Piece(move.dstFile, move.dstRank)
+							Expect(testee.ValidateMove(move.dstFile, move.dstRank, target)).To(Not(BeNil()))
+						})
+					}(move)
 				}
 			})
 		})

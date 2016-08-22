@@ -3,7 +3,7 @@ package chess
 import (
 	"errors"
 	"fmt"
-	"math"
+	// "math"
 )
 
 type pieceType rune
@@ -56,16 +56,24 @@ func (p *Piece) move(rank string, file string) {
 func (p *Piece) ValidateMove(rank string, file string, target *Piece) error {
 	// Get the move vector
 	x, y := rankFileToXY(file, rank)
-	dx := math.Abs(float64(x) - float64(p.x))
-	dy := math.Abs(float64(y) - float64(p.y))
+	dx := float64(x) - float64(p.x)
+	dy := float64(y) - float64(p.y)
+	// adx := math.Abs(dx)
+	// ady := math.Abs(dy)
+	up := -1.0
+	if p.side == Black { up = 1.0 }
+	inv := errors.New(fmt.Sprintf("Invalid move vec(%v,%v) * %v", dx, dy, up))
 
 	switch p.piece {
 	case Pawn:
 		if target != nil {
 			
 		}
-		if dx > 0 || dy > 2 {
-			return errors.New("Invalid move")
+		if dx > 0 || dy > 2 * up {
+			return inv
+		}
+		if dy * up <= 0 {
+			return inv
 		}
 		// TODO en-passant
 	case King:

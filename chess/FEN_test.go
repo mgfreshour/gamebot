@@ -35,6 +35,34 @@ var _ = Describe("FEN", func() {
 				}
 			}
 		})
-		//It("Loads side")
+		It("Loads white turn", func() {
+			game := LoadFENGame("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+			Expect(game.Side).To(Equal(White))
+		})
+		It("Loads black turn", func() {
+			game := LoadFENGame("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1")
+			Expect(game.Side).To(Equal(Black))
+		})
+		// PIt("Loads available castling", func() {})
+		// PIt("Loads available castling", func() {})
+		// PIt("Loads En passant available", func() {})
+		// PIt("Loads En passant non-available", func() {})
+		// PIt("Loads half-move clock", func() {})
+		// PIt("Loads full-move clock", func() {})
+	})
+
+	Describe("SaveFENGame", func() {
+		It("Saves what was loaded", func() {
+			tests := []string{
+				"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+				"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1", // TODO - en passant, clocks
+				"rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1", // TODO - en passant, clocks
+				"rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 0 1", // TODO - en passant, clocks
+			}
+			for _, line := range tests {
+				game := LoadFENGame(line)
+				Expect(SaveFENGame(game)).To(Equal(line))
+			}
+		})
 	})
 })
