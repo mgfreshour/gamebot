@@ -4,6 +4,7 @@ import (
 	"errors"
 	"math"
 	"strconv"
+	"strings"
 )
 
 type side rune
@@ -13,27 +14,18 @@ const (
 	Black side = 'b'
 )
 
-var fileMappings map[string]byte = map[string]byte{
-	"A": 0,
-	"B": 1,
-	"C": 2,
-	"D": 3,
-	"E": 4,
-	"F": 5,
-	"G": 6,
-	"H": 7,
-}
+var files string = "ABCDEFGH"
 
 func rankFileToXY(rank string, file string) (byte, byte) {
-	x := fileMappings[file]
+	x := strings.Index(files, file)
 	y, _ := strconv.ParseInt(rank, 10, 8)
 	y = int64(math.Abs(float64(y - 8)))
-	return x, byte(y)
+	return byte(x), byte(y)
 }
 
 func xyToRankFile(x int, y int) (string, string) {
 	var r = strconv.Itoa(y + 1)
-	var f = string("ABCDEFGH"[x])
+	var f = string(files[x])
 
 	return f, r
 }
