@@ -106,7 +106,10 @@ func SaveFENGame(g *Game) string {
 
 	buf.WriteByte(byte(g.Side))
 
-	buf.Write([]byte(" KQkq - 0 1"))
+	buf.WriteByte(' ')
+
+	// TODO
+	buf.Write([]byte("KQkq - 0 1"))
 
 	return buf.String()
 }
