@@ -84,14 +84,14 @@ var _ = Describe("Piece", func() {
 				"Allows move up-left": testMove{"E", "5", "D", "6"},
 			}
 			disallowed := map[string]testMove{
-				"Allows move up by 2": testMove{"E", "5", "E", "7"},
-				"Allows move up-right by 2": testMove{"E", "5", "G", "7"},
-				"Allows move right by 2": testMove{"E", "5", "G", "5"},
-				"Allows move down-right by 2": testMove{"E", "5", "G", "3"},
-				"Allows move down by 2": testMove{"E", "5", "E", "3"},
-				"Allows move down-left by 2": testMove{"E", "5", "C", "3"},
-				"Allows move left by 2": testMove{"E", "5", "C", "5"},
-				"Allows move up-left by 2": testMove{"E", "5", "C", "7"},
+				"Disallows move up by 2": testMove{"E", "5", "E", "7"},
+				"Disallows move up-right by 2": testMove{"E", "5", "G", "7"},
+				"Disallows move right by 2": testMove{"E", "5", "G", "5"},
+				"Disallows move down-right by 2": testMove{"E", "5", "G", "3"},
+				"Disallows move down by 2": testMove{"E", "5", "E", "3"},
+				"Disallows move down-left by 2": testMove{"E", "5", "C", "3"},
+				"Disallows move left by 2": testMove{"E", "5", "C", "5"},
+				"Disallows move up-left by 2": testMove{"E", "5", "C", "7"},
 			}
 			for name, move := range allowed {
 				func(move testMove) {
