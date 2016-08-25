@@ -28,7 +28,13 @@ func (g *Game) DisplaySlack() string {
 		ret += "\n"
 		file--
 	}
-	ret += "     A     B    C    D    E     F    G    H"
+	ret += "     A     B    C    D    E     F    G    H\n"
+
+	if g.Side == White {
+		ret += "White's move!"
+	} else {
+		ret += "Black's move!"
+	}
 
 	return ret
 }
