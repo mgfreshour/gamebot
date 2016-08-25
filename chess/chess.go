@@ -2,10 +2,10 @@ package chess
 
 import (
 	"errors"
+	"fmt"
 	"math"
 	"strconv"
 	"strings"
-	"fmt"
 )
 
 type side rune
@@ -87,7 +87,8 @@ func (g *Game) Move(srcFile string, srcRank string, dstFile string, dstRank stri
 		return errors.New("Invalid Move, it's not your turn!")
 	}
 
-	err := g.ValidateMove(srcFile, srcRank, dstFile, dstRank); if err != nil {
+	err := g.ValidateMove(srcFile, srcRank, dstFile, dstRank)
+	if err != nil {
 		return err
 	}
 
@@ -110,7 +111,6 @@ func (g *Game) Move(srcFile string, srcRank string, dstFile string, dstRank stri
 	return nil
 }
 
-
 func (g *Game) ValidateMove(srcFile string, srcRank string, file string, rank string) error {
 	// Get the move vector
 	p := g.Piece(srcFile, srcRank)
@@ -121,19 +121,21 @@ func (g *Game) ValidateMove(srcFile string, srcRank string, file string, rank st
 	adx := int(math.Abs(float64(dx)))
 	ady := int(math.Abs(float64(dy)))
 	up := -1
-	if p.side == Black { up = 1 }
-	inv := fmt.Sprintf(" vec(%v,%v) %vX%v", dx, dy * up, p, target)
+	if p.side == Black {
+		up = 1
+	}
+	inv := fmt.Sprintf(" vec(%v,%v) %vX%v", dx, dy*up, p, target)
 
 	switch p.piece {
 	case Pawn:
 		// TODO en-passant
 		if target != nil {
-			if adx != 1 || dy * up != 1 {
+			if adx != 1 || dy*up != 1 {
 				return errors.New("Invalid capture!" + inv)
 			}
-		} else if dx > 0 || dy * up > 2 {
+		} else if dx > 0 || dy*up > 2 {
 			return errors.New("Invalid move, going too far!" + inv)
-		} else if dy * up <= 0 {
+		} else if dy*up <= 0 {
 			return errors.New("Invalid move, going backwards!" + inv)
 		}
 	case King:
@@ -147,12 +149,12 @@ func (g *Game) ValidateMove(srcFile string, srcRank string, file string, rank st
 		}
 	case Queen:
 		if !((adx == 0 && ady >= 1) ||
-			 (adx >= 1 && ady == 0) ||
-			 (adx == ady)) {
+			(adx >= 1 && ady == 0) ||
+			(adx == ady)) {
 			return errors.New("Invalid move, something ain't right!" + inv)
 		}
 	case Bishop:
-		if (adx != ady) {
+		if adx != ady {
 			return errors.New("Invalid move, not diagnal!" + inv)
 		}
 	case Knight:

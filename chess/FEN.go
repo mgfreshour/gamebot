@@ -1,9 +1,9 @@
 package chess
 
 import (
+	"bytes"
 	"strconv"
 	"unicode"
-	"bytes"
 )
 
 func LoadFENGame(s string) *Game {
