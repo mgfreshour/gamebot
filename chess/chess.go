@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"strconv"
-	"strings"
 )
 
 type side rune
@@ -15,34 +13,22 @@ const (
 	Black side = 'b'
 )
 
-var files string = "ABCDEFGH"
-
-func rankFileToXY(file string, rank string) (byte, byte) {
-	x := strings.Index(files, file)
-	y, _ := strconv.ParseInt(rank, 10, 8)
-	y = int64(math.Abs(float64(y - 8)))
-	if x > 7 || x < 0 || y > 7 || y < 0 {
-		panic(fmt.Sprintf("Invalid conversion happened! %v, %v to %v, %v", file, rank, x, y))
-	}
-	return byte(x), byte(y)
-}
-
-func xyToRankFile(x int, y int) (string, string) {
-	if x > 7 || x < 0 || y > 7 || y < 0 {
-		panic(fmt.Sprintf("Invalid conversion expected! %v, %v", x, y))
-	}
-
-	var r = strconv.Itoa(y + 1)
-	var f = string(files[x])
-
-	return f, r
-}
-
 type Board [8][8]*Piece
 
+type castlingStatus struct {
+	BlackKing  bool
+	BlackQueen bool
+	WhiteKing  bool
+	WhiteQueen bool
+}
 type Game struct {
-	Pieces []*Piece
-	Side   side
+	Pieces        []*Piece
+	Side          side
+	FullMoveClock int
+	HalfMoveClock int
+	Castling      castlingStatus
+	EnPassantFile string
+	EnPassantRank string
 }
 
 func NewGame() *Game {
@@ -106,6 +92,13 @@ func (g *Game) Move(srcFile string, srcRank string, dstFile string, dstRank stri
 		g.Side = Black
 	} else {
 		g.Side = White
+	}
+
+	g.FullMoveClock++
+	if moving.piece == Pawn || target != nil {
+		g.HalfMoveClock = 0
+	} else {
+		g.HalfMoveClock++
 	}
 
 	return nil

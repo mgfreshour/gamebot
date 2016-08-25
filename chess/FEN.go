@@ -3,11 +3,12 @@ package chess
 import (
 	"bytes"
 	"strconv"
+	"strings"
 	"unicode"
 )
 
 func LoadFENGame(s string) *Game {
-	game := &Game{make([]*Piece, 0), White}
+	game := &Game{make([]*Piece, 0), White, 0, 0, castlingStatus{}, "", ""}
 
 	n := loadBoardPositions(s, game)
 	n = loadSide(s, n, game)
@@ -56,20 +57,66 @@ func loadSide(s string, n int, game *Game) int {
 	return n + 1
 }
 func loadCastling(s string, n int, game *Game) int {
-	return n + 1
+	if strings.Index("KQkq ", string(s[n])) == -1 {
+		return n
+	}
+	n++
+	for ; strings.Index("KQkq ", string(s[n])) != -1; n++ {
+		switch s[n] {
+		case 'k':
+			game.Castling.BlackKing = true
+		case 'K':
+			game.Castling.WhiteKing = true
+		case 'q':
+			game.Castling.BlackQueen = true
+		case 'Q':
+			game.Castling.WhiteQueen = true
+		case ' ':
+			// Skip it
+		default:
+			panic("Unknown castling status '" + string(s[n]) + "'")
+		}
+	}
+	return n
 
 }
 func loadEnPassant(s string, n int, game *Game) int {
+	if s[n] == ' ' {
+		n++
+	}
+	if s[n] != '-' {
+		game.EnPassantFile = string(s[n])
+		n++
+		game.EnPassantRank = string(s[n])
+	}
 	return n + 1
 
 }
 func loadHalfMove(s string, n int, game *Game) int {
-	return n + 1
+	num := ""
+	if s[n] == ' ' {
+		n++
+	}
+	for ; s[n] != ' '; n++ {
+		num += string(s[n])
+	}
+	x, _ := strconv.ParseInt(num, 10, 32)
+	game.HalfMoveClock = int(x)
+	return n
 
 }
 func loadFullMove(s string, n int, game *Game) int {
-	return n + 1
+	num := ""
 
+	if s[n] == ' ' {
+		n++
+	}
+	for ; n < len(s) && s[n] != ' '; n++ {
+		num += string(s[n])
+	}
+	x, _ := strconv.ParseInt(num, 10, 32)
+	game.FullMoveClock = int(x)
+	return n
 }
 
 func SaveFENGame(g *Game) string {
@@ -108,8 +155,30 @@ func SaveFENGame(g *Game) string {
 
 	buf.WriteByte(' ')
 
-	// TODO
-	buf.Write([]byte("KQkq - 0 1"))
+	if g.Castling.WhiteKing {
+		buf.WriteByte('K')
+	}
+	if g.Castling.WhiteQueen {
+		buf.WriteByte('Q')
+	}
+	if g.Castling.BlackKing {
+		buf.WriteByte('k')
+	}
+	if g.Castling.BlackQueen {
+		buf.WriteByte('q')
+	}
+	// TODO EnPassant
+	buf.WriteByte(' ')
+	if g.EnPassantFile != "" {
+		buf.Write([]byte(g.EnPassantFile + g.EnPassantRank))
+	} else {
+		buf.WriteByte('-')
+	}
+	buf.WriteByte(' ')
+
+	buf.Write([]byte(strconv.Itoa(g.HalfMoveClock)))
+	buf.WriteByte(' ')
+	buf.Write([]byte(strconv.Itoa(g.FullMoveClock)))
 
 	return buf.String()
 }

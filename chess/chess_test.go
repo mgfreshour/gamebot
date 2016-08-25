@@ -95,6 +95,31 @@ var _ = Describe("Chess", func() {
 			testee.Move("A", "4", "B", "5")
 			Expect(testee.Side).To(Equal(Black))
 		})
+		It("Increments full move clock", func() {
+			testee.Move("A", "2", "A", "4")
+			Expect(testee.FullMoveClock).To(Equal(2))
+		})
+		It("Increments half move clock", func() {
+			testee.Move("B", "1", "C", "3")
+			Expect(testee.HalfMoveClock).To(Equal(1))
+		})
+		It("Resets half move clock on pawn move", func() {
+			testee.Move("B", "1", "C", "3")
+			Expect(testee.HalfMoveClock).To(Equal(1))
+			testee.Move("B", "7", "B", "5")
+			Expect(testee.HalfMoveClock).To(Equal(0))
+		})
+		It("Resets half move clock on capture", func() {
+			testee.Move("B", "2", "B", "4")
+			Expect(testee.HalfMoveClock).To(Equal(0))
+			testee.Move("B", "8", "C", "6")
+			Expect(testee.HalfMoveClock).To(Equal(1))
+			testee.Move("B", "1", "C", "3")
+			Expect(testee.HalfMoveClock).To(Equal(2))
+			testee.Move("C", "6", "B", "4")
+			Expect(testee.HalfMoveClock).To(Equal(0))
+		})
+		PIt("Sets EnPassant square", func() {})
 	})
 
 	Describe("ValidateMove", func() {
