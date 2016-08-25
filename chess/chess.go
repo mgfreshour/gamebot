@@ -87,6 +87,10 @@ func (g *Game) Move(srcFile string, srcRank string, dstFile string, dstRank stri
 		return errors.New("Invalid Move, it's not your turn!")
 	}
 
+	err := g.ValidateMove(srcFile, srcRank, dstFile, dstRank); if err != nil {
+		return err
+	}
+
 	target := g.Piece(dstFile, dstRank)
 	if target != nil {
 		if target.side == moving.side {
@@ -142,8 +146,19 @@ func (g *Game) ValidateMove(srcFile string, srcRank string, file string, rank st
 			return errors.New("Invalid move, multiple directions!" + inv)
 		}
 	case Queen:
+		if !((adx == 0 && ady >= 1) ||
+			 (adx >= 1 && ady == 0) ||
+			 (adx == ady)) {
+			return errors.New("Invalid move, something ain't right!" + inv)
+		}
 	case Bishop:
+		if (adx != ady) {
+			return errors.New("Invalid move, not diagnal!" + inv)
+		}
 	case Knight:
+		if !((adx == 2 && ady == 1) || (adx == 1 && ady == 2)) {
+			return errors.New("Invalid move, not knightly!" + inv)
+		}
 	default:
 		return errors.New("Unknown piece type " + string(p.piece))
 	}

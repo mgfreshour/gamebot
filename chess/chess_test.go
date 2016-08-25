@@ -220,5 +220,124 @@ var _ = Describe("Chess", func() {
 				}(move)
 			}
 		})
+		Context("Queens", func() {
+			BeforeEach(func() {
+				testee = LoadFENGame("8/8/8/4q3/8/8/8/8 w KQkq - 0 1")
+				// fmt.Println(game.DisplayText())
+			})
+			allowed := map[string]testMove{
+				"Allows move up": testMove{"E", "5", "E", "6"},
+				"Allows move up by 2": testMove{"E", "5", "E", "7"},
+				"Allows move right": testMove{"E", "5", "F", "5"},
+				"Allows move right by 2": testMove{"E", "5", "G", "5"},
+				"Allows move down": testMove{"E", "5", "E", "4"},
+				"Allows move down by 2": testMove{"E", "5", "E", "3"},
+				"Allows move left": testMove{"E", "5", "D", "5"},
+				"Allows move left by 2": testMove{"E", "5", "C", "5"},
+				"Allows move up-right by 2": testMove{"E", "5", "G", "7"},
+				"Allows move down-right by 2": testMove{"E", "5", "G", "3"},
+				"Allows move down-left by 2": testMove{"E", "5", "C", "3"},
+				"Allows move up-left by 2": testMove{"E", "5", "C", "7"},
+				"Allows move down-right": testMove{"E", "5", "F", "4"},
+				"Allows move down-left": testMove{"E", "5", "D", "4"},
+				"Allows move up-left": testMove{"E", "5", "D", "6"},
+			}
+			disallowed := map[string]testMove{
+				// TODO negative case, knight like?
+			}
+			for name, move := range allowed {
+				func(move testMove) {
+					It(name, func() {
+						Expect(testee.ValidateMove(move.srcFile, move.srcRank, move.dstFile, move.dstRank)).To(BeNil())
+					})
+				}(move)
+			}
+			for name, move := range disallowed {
+				func(move testMove) {
+					It(name, func() {
+						Expect(testee.ValidateMove(move.srcFile, move.srcRank, move.dstFile, move.dstRank)).To(Not(BeNil()))
+					})
+				}(move)
+			}
+		})
+		Context("Bishops", func() {
+			BeforeEach(func() {
+				testee = LoadFENGame("8/8/8/4b3/8/8/8/8 w KQkq - 0 1")
+				// fmt.Println(game.DisplayText())
+			})
+			allowed := map[string]testMove{
+				"Allows move up-right by 2": testMove{"E", "5", "G", "7"},
+				"Allows move down-right by 2": testMove{"E", "5", "G", "3"},
+				"Allows move down-left by 2": testMove{"E", "5", "C", "3"},
+				"Allows move up-left by 2": testMove{"E", "5", "C", "7"},
+				"Allows move down-right": testMove{"E", "5", "F", "4"},
+				"Allows move down-left": testMove{"E", "5", "D", "4"},
+				"Allows move up-left": testMove{"E", "5", "D", "6"},
+			}
+			disallowed := map[string]testMove{
+				"Disallows move up": testMove{"E", "5", "E", "6"},
+				"Disallows move up by 2": testMove{"E", "5", "E", "7"},
+				"Disallows move right": testMove{"E", "5", "F", "5"},
+				"Disallows move right by 2": testMove{"E", "5", "G", "5"},
+				"Disallows move down": testMove{"E", "5", "E", "4"},
+				"Disallows move down by 2": testMove{"E", "5", "E", "3"},
+				"Disallows move left": testMove{"E", "5", "D", "5"},
+				"Disallows move left by 2": testMove{"E", "5", "C", "5"},
+			}
+			for name, move := range allowed {
+				func(move testMove) {
+					It(name, func() {
+						Expect(testee.ValidateMove(move.srcFile, move.srcRank, move.dstFile, move.dstRank)).To(BeNil())
+					})
+				}(move)
+			}
+			for name, move := range disallowed {
+				func(move testMove) {
+					It(name, func() {
+						Expect(testee.ValidateMove(move.srcFile, move.srcRank, move.dstFile, move.dstRank)).To(Not(BeNil()))
+					})
+				}(move)
+			}
+		})
+		Context("Knights", func() {
+			BeforeEach(func() {
+				testee = LoadFENGame("8/8/8/4n3/8/8/8/8 w KQkq - 0 1")
+				// fmt.Println(game.DisplayText())
+			})
+			allowed := map[string]testMove{
+				// TODO positive case
+			}
+			disallowed := map[string]testMove{
+				"Disallows move up-right by 2": testMove{"E", "5", "G", "7"},
+				"Disallows move down-right by 2": testMove{"E", "5", "G", "3"},
+				"Disallows move down-left by 2": testMove{"E", "5", "C", "3"},
+				"Disallows move up-left by 2": testMove{"E", "5", "C", "7"},
+				"Disallows move down-right": testMove{"E", "5", "F", "4"},
+				"Disallows move down-left": testMove{"E", "5", "D", "4"},
+				"Disallows move up-left": testMove{"E", "5", "D", "6"},
+				"Disallows move up": testMove{"E", "5", "E", "6"},
+				"Disallows move up by 2": testMove{"E", "5", "E", "7"},
+				"Disallows move right": testMove{"E", "5", "F", "5"},
+				"Disallows move right by 2": testMove{"E", "5", "G", "5"},
+				"Disallows move down": testMove{"E", "5", "E", "4"},
+				"Disallows move down by 2": testMove{"E", "5", "E", "3"},
+				"Disallows move left": testMove{"E", "5", "D", "5"},
+				"Disallows move left by 2": testMove{"E", "5", "C", "5"},
+			}
+			for name, move := range allowed {
+				func(move testMove) {
+					It(name, func() {
+						Expect(testee.ValidateMove(move.srcFile, move.srcRank, move.dstFile, move.dstRank)).To(BeNil())
+					})
+				}(move)
+			}
+			for name, move := range disallowed {
+				func(move testMove) {
+					It(name, func() {
+						Expect(testee.ValidateMove(move.srcFile, move.srcRank, move.dstFile, move.dstRank)).To(Not(BeNil()))
+					})
+				}(move)
+			}
+		})
 	})
 })
