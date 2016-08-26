@@ -40,6 +40,7 @@ func handlMessage(ev *slack.MessageEvent) {
 		} else {
 			sayInChan(ev.Channel, "Made Move")
 			sayInChan(ev.Channel, game.DisplaySlack())
+			chess.SaveGame(game)
 		}
 	}
 }
