@@ -10,4 +10,6 @@ go:
 sudo: false
 
 script:
+  - go get -u github.com/govend/govend
+  - govend -v
   - make
