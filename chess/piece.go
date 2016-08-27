@@ -47,8 +47,8 @@ type Piece struct {
 	piece    pieceType
 }
 
-func (p *Piece) move(rank string, file string) {
-	p.x, p.y = rankFileToXY(file, rank)
+func (p *Piece) move(rankFile string) {
+	p.x, p.y = rankFileToXY(rankFile)
 }
 
 func (p *Piece) String() string {

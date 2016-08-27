@@ -125,8 +125,8 @@ func SaveFENGame(g *Game) string {
 	for y := 7; y >= 0; y-- {
 		n := 0
 		for x := 0; x < 8; x++ {
-			f, r := xyToRankFile(x, y)
-			p := g.Piece(f, r)
+			coord := xyToRankFile(x, y)
+			p := g.Piece(coord)
 			if p != nil {
 				if n > 0 {
 					buf.Write([]byte(strconv.Itoa(n)))

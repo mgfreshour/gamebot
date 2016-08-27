@@ -47,8 +47,8 @@ func (g *Game) Board() Board {
 	return board
 }
 
-func (g *Game) Piece(file string, rank string) *Piece {
-	x, y := rankFileToXY(file, rank)
+func (g *Game) Piece(rankFile string) *Piece {
+	x, y := rankFileToXY(rankFile)
 
 	for _, piece := range g.Pieces {
 		if !piece.captured && piece.x == x && piece.y == byte(y) {
@@ -59,13 +59,13 @@ func (g *Game) Piece(file string, rank string) *Piece {
 	return nil
 }
 
-func (g *Game) Move(srcFile string, srcRank string, dstFile string, dstRank string) error {
-	moving := g.Piece(srcFile, srcRank)
+func (g *Game) Move(src string, dst string) error {
+	moving := g.Piece(src)
 	if moving == nil {
 		return errors.New("No Piece Found there!")
 	}
 
-	if srcRank == dstRank && srcFile == dstFile {
+	if src == dst {
 		return errors.New("Invalid Move, same space!")
 	}
 
@@ -73,12 +73,12 @@ func (g *Game) Move(srcFile string, srcRank string, dstFile string, dstRank stri
 		return errors.New("Invalid Move, it's not your turn!")
 	}
 
-	err := g.ValidateMove(srcFile, srcRank, dstFile, dstRank)
+	err := g.ValidateMove(src, dst)
 	if err != nil {
 		return err
 	}
 
-	target := g.Piece(dstFile, dstRank)
+	target := g.Piece(dst)
 	if target != nil {
 		if target.side == moving.side {
 			return errors.New("Invalid Move, can't take your own pieces!")
@@ -86,7 +86,7 @@ func (g *Game) Move(srcFile string, srcRank string, dstFile string, dstRank stri
 		target.Capture()
 	}
 
-	moving.move(dstRank, dstFile)
+	moving.move(dst)
 
 	if g.Side == White {
 		g.Side = Black
@@ -104,11 +104,11 @@ func (g *Game) Move(srcFile string, srcRank string, dstFile string, dstRank stri
 	return nil
 }
 
-func (g *Game) ValidateMove(srcFile string, srcRank string, file string, rank string) error {
+func (g *Game) ValidateMove(src string, dst string) error {
 	// Get the move vector
-	p := g.Piece(srcFile, srcRank)
-	target := g.Piece(file, rank)
-	x, y := rankFileToXY(file, rank)
+	p := g.Piece(src)
+	target := g.Piece(dst)
+	x, y := rankFileToXY(dst)
 	dx := int(float64(x) - float64(p.x))
 	dy := int(float64(y) - float64(p.y))
 	adx := int(math.Abs(float64(dx)))

@@ -12,7 +12,7 @@ import (
 )
 
 var slackToken = os.Getenv("SLACK_TOKEN")
-var moveRegex = regexp.MustCompile(`gamebot\s+([a-h])([0-8])-([a-h])([0-8])`)
+var moveRegex = regexp.MustCompile(`gamebot\s+([a-h][0-8])-([a-h][0-8])`)
 var slackClient *slack.Client
 var rtm *slack.RTM
 
@@ -41,7 +41,7 @@ func handlMessage(ev *slack.MessageEvent) {
 			return
 		}
 		matches := moveRegex.FindAllStringSubmatch(text, -1)
-		err := game.Move(matches[0][1], matches[0][2], matches[0][3], matches[0][4])
+		err := game.Move(matches[0][1], matches[0][2])
 		if err != nil {
 			sayInChan(ev.Channel, fmt.Sprintf("%v", err))
 		} else {
