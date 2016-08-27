@@ -2,19 +2,21 @@ vendors:
 - path: github.com/davecgh/go-spew
   rev: 6cf5744a041a0022271cefed95ba843f6d87fd51
 - path: github.com/golang/protobuf
-  rev: f592bd283e9ef86337a432eb50e592278c3d534d
+  rev: 888eb0692c857ec880338addf316bd662d5e630e
+- path: github.com/mattn/go-sqlite3
+  rev: b5c99a720374818b629fd1fbf6d2cbb4fb9a5644
 - path: github.com/nlopes/slack
   rev: b7940f209838f93dc7ab0d823145513c9660f22a
 - path: github.com/onsi/ginkgo
   rev: 43e2af1f01ace55adbb6d7d0f30416476db1baae
 - path: github.com/onsi/gomega
-  rev: c90bd38f8da6e92f8b114953db2f0ad7361fb4b4
+  rev: b48c9a8b2644326d0a44eaaacc8d83e35174a05d
 - path: github.com/pmezard/go-difflib
   rev: 792786c7400a136282c1664665ae0a8db921c6c2
 - path: github.com/stretchr/testify
   rev: d77da356e56a7428ad25149ca77381849a6a5232
 - path: golang.org/x/net
-  rev: 7394c112eae4dba7e96bfcfe738e6373d61772b4
+  rev: 6250b412798208e6c90b03b7c4f226de5aa299e2
 - path: golang.org/x/sys
   rev: a646d33e2ee3172a661fc09bca23bb4889a41bc8
 - path: gopkg.in/check.v1
