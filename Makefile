@@ -14,7 +14,7 @@ deps:
 build:
 	go build -o ${BINARY} bot.go
 lint:
-	gometalinter --vendor --deadline 10s --disable=gocyclo --disable=gotype .
+	gometalinter --vendor --deadline 20s --disable=gocyclo --disable=gotype .
 fmt:
 	go fmt ${PACKAGES}
 test:
