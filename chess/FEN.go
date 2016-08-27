@@ -122,7 +122,7 @@ func loadFullMove(s string, n int, game *Game) int {
 func SaveFENGame(g *Game) string {
 	var buf bytes.Buffer
 
-	for y := 0; y < 8; y++ {
+	for y := 7; y >= 0; y-- {
 		n := 0
 		for x := 0; x < 8; x++ {
 			f, r := xyToRankFile(x, y)
@@ -133,9 +133,9 @@ func SaveFENGame(g *Game) string {
 					n = 0
 				}
 				if p.side == White {
-					buf.WriteByte(byte(p.piece))
-				} else {
 					buf.WriteByte(byte(unicode.ToUpper(rune(p.piece))))
+				} else {
+					buf.WriteByte(byte(p.piece))
 				}
 			} else {
 				n++
@@ -145,7 +145,7 @@ func SaveFENGame(g *Game) string {
 			buf.Write([]byte(strconv.Itoa(n)))
 			n = 0
 		}
-		if y < 7 {
+		if y > 0 {
 			buf.WriteByte('/')
 		}
 	}
