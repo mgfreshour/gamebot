@@ -4,7 +4,7 @@ BINARY=$(SOURCEDIR)/bin/gamebot
 SOURCES := $(shell find $(SOURCEDIR) -name '*.go')
 PACKAGES := $(shell go list ./... | grep -v /vendor/)
 
-all: clean fmt test lint build
+all: clean fmt test build
 
 .DEFAULT_GOAL: all
 
@@ -14,7 +14,7 @@ deps:
 build:
 	go build -o ${BINARY} bot.go
 lint:
-	gometalinter --vendor --deadline 20s --disable=gocyclo --disable=gotype .
+	gometalinter --exclude=vendor --exclude=_test --vendor --deadline 20s --disable=gocyclo --disable=gotype ./...
 fmt:
 	go fmt ${PACKAGES}
 test:

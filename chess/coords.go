@@ -7,9 +7,10 @@ import (
 	"strings"
 )
 
-var files string = "ABCDEFGH"
+var files string = "abcdefgh"
 
 func rankFileToXY(file string, rank string) (byte, byte) {
+	file = strings.ToLower(file)
 	x := strings.Index(files, file)
 	y, _ := strconv.ParseInt(rank, 10, 8)
 	y = int64(math.Abs(float64(y - 8)))

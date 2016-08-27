@@ -6,69 +6,68 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func SaveGame(game *Game) {
-	db, err := sql.Open("sqlite3", "./foo.db")
-	checkErr(err)
+var db *sql.DB
+var insertGame *sql.Stmt
+var updateGame *sql.Stmt
+var loadGame *sql.Stmt
 
-	ddl, err := db.Prepare("CREATE TABLE IF NOT EXISTS `userinfo` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT,`username` VARCHAR(64) NULL,`departname` VARCHAR(64) NULL,`created` DATE NULL)")
+func init() {
+	var err error
+	db, err = sql.Open("sqlite3", "./chess.db")
+	checkErr(err)
+	// defer db.Close()
+
+	ddl, err := db.Prepare(`
+	CREATE TABLE IF NOT EXISTS chess_games (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		name VARCHAR(64),
+		fen VARCHAR(64)
+	)`)
 	checkErr(err)
 	_, err = ddl.Exec()
 	checkErr(err)
 
-	// insert
-	stmt, err := db.Prepare("INSERT INTO userinfo(username, departname, created) values(?,?,?)")
+	insertGame, err = db.Prepare("INSERT INTO chess_games(name, fen) values(?,?)")
 	checkErr(err)
 
-	res, err := stmt.Exec("astaxie", "研发部门", "2012-12-09")
+	updateGame, err = db.Prepare("UPDATE chess_games SET fen=? WHERE name=?")
+	checkErr(err)
+
+	loadGame, err = db.Prepare("SELECT fen FROM chess_games WHERE name=? LIMIT 1")
+	checkErr(err)
+}
+
+func LoadGame(name string) *Game {
+	res, err := loadGame.Query(name)
+	defer res.Close()
+	checkErr(err)
+
+	var fen string
+	if !res.Next() {
+		return nil
+	}
+	err = res.Scan(&fen)
+	checkErr(err)
+
+	game := LoadFENGame(fen)
+	return game
+}
+
+func CreateGame(name string) *Game {
+	game := NewGame()
+	res, err := insertGame.Exec(name, SaveFENGame(game))
 	checkErr(err)
 
 	id, err := res.LastInsertId()
 	checkErr(err)
+	fmt.Printf("Saved Id - %v", id)
 
-	fmt.Println(id)
-	// update
-	stmt, err = db.Prepare("update userinfo set username=? where uid=?")
+	return game
+}
+
+func SaveGame(game *Game, name string) {
+	_, err := updateGame.Exec(SaveFENGame(game), name)
 	checkErr(err)
-
-	res, err = stmt.Exec("astaxieupdate", id)
-	checkErr(err)
-
-	affect, err := res.RowsAffected()
-	checkErr(err)
-
-	fmt.Println(affect)
-
-	// query
-	rows, err := db.Query("SELECT * FROM userinfo")
-	checkErr(err)
-
-	for rows.Next() {
-		var uid int
-		var username string
-		var department string
-		var created string
-		err = rows.Scan(&uid, &username, &department, &created)
-		checkErr(err)
-		fmt.Println(uid)
-		fmt.Println(username)
-		fmt.Println(department)
-		fmt.Println(created)
-	}
-
-	// delete
-	stmt, err = db.Prepare("delete from userinfo where uid=?")
-	checkErr(err)
-
-	res, err = stmt.Exec(id)
-	checkErr(err)
-
-	affect, err = res.RowsAffected()
-	checkErr(err)
-
-	fmt.Println(affect)
-
-	db.Close()
-
 }
 
 func checkErr(err error) {
