@@ -11,6 +11,7 @@ sudo: false
 
 script:
   - go get -u github.com/alecthomas/gometalinter
+  - gometalinter --install
   - go get -u github.com/govend/govend
   - govend -v
   - make
