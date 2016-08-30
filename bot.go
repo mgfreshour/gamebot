@@ -18,7 +18,7 @@ var rtm *slack.RTM
 
 func sayInChan(ch string, msg string) {
 	//chanId, Ts, err
-	_, _, err := slackClient.PostMessage(ch, msg, slack.PostMessageParameters{Username: "gamebot"})
+	_, _, err := slackClient.PostMessage(ch, msg, slack.PostMessageParameters{Username: "gamebot", AsUser: true})
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -28,11 +28,17 @@ func handlMessage(ev *slack.MessageEvent) {
 	text := strings.ToLower(ev.Text)
 	if text == "gamebot start game" {
 		game := chess.CreateGame(ev.Channel)
-		sayInChan(ev.Channel, game.DisplaySlack())
+		msg := strings.Split(game.DisplaySlack(), "\n")
+		for _, str := range msg {
+			sayInChan(ev.Channel, str)
+		}
 	}
 	if text == "gamebot show" {
 		game := chess.LoadGame(ev.Channel)
-		sayInChan(ev.Channel, game.DisplaySlack())
+		msg := strings.Split(game.DisplaySlack(), "\n")
+		for _, str := range msg {
+			sayInChan(ev.Channel, str)
+		}
 	}
 	if moveRegex.MatchString(text) {
 		game := chess.LoadGame(ev.Channel)
@@ -46,7 +52,10 @@ func handlMessage(ev *slack.MessageEvent) {
 			sayInChan(ev.Channel, fmt.Sprintf("%v", err))
 		} else {
 			sayInChan(ev.Channel, "Made Move")
-			sayInChan(ev.Channel, game.DisplaySlack())
+			msg := strings.Split(game.DisplaySlack(), "\n")
+			for _, str := range msg {
+				sayInChan(ev.Channel, str)
+			}
 			chess.SaveGame(game, ev.Channel)
 		}
 	}

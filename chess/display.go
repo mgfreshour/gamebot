@@ -9,7 +9,7 @@ func (g *Game) DisplaySlack() string {
 	ret := "" // TODO - find equivalent in go of ByteBuffer
 	file := 8
 	for _, row := range g.Board() {
-		ret += strconv.Itoa(file)
+		ret += ":chess-" + strconv.Itoa(file) + ":"
 		rank := 1
 		for _, piece := range row {
 			var sq string
@@ -28,7 +28,7 @@ func (g *Game) DisplaySlack() string {
 		ret += "\n"
 		file--
 	}
-	ret += "     A     B    C    D    E     F    G    H\n"
+	ret += ":chess-w::chess-ca::chess-cb::chess-cc::chess-cd::chess-ce::chess-cf::chess-cg::chess-ch:\n"
 
 	if g.Side == White {
 		ret += "White's move!"
